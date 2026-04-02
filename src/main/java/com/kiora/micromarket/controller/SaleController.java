@@ -1,5 +1,5 @@
 package com.kiora.micromarket.controller;
 
-public class ProductoController {
+public class SaleController {
     
 }

@@ -1,5 +1,5 @@
 package com.kiora.micromarket.dto.request;
 
-public class ProductoRequestDTO {
+public class ProductRequestDTO {
     
 }

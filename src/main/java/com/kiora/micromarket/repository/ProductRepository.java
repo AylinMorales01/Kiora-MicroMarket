@@ -1,5 +1,5 @@
 package com.kiora.micromarket.repository;
 
-public class VentaRepository {
+public class ProductRepository {
     
 }

@@ -1,5 +1,5 @@
 package com.kiora.micromarket.entity;
 
-public class Categoria {
+public class Product {
     
 }

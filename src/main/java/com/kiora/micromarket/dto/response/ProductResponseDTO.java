@@ -1,5 +1,5 @@
 package com.kiora.micromarket.dto.response;
 
-public class VentaResponseDTO {
+public class ProductResponseDTO {
     
 }
