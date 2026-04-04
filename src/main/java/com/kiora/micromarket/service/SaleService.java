@@ -1,5 +1,5 @@
 package com.kiora.micromarket.service;
 
-public class VentaService {
+public class SaleService {
     
 }
