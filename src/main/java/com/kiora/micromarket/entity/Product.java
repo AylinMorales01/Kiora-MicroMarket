@@ -1,6 +1,7 @@
 package com.kiora.micromarket.entity;
 
 import jakarta.persistence.*;
+import java.util.List; // Importante para la lista de proveedores
 
 @Entity
 @Table(name = "products")
@@ -23,6 +24,17 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    // ESTA ES LA PARTE QUE FALTABA PARA CONECTAR CON PROVIDER
+    @ManyToMany
+    @JoinTable(
+        name = "products_providers", // Nombre de la tabla intermedia en la DB
+        joinColumns = @JoinColumn(name = "product_id"),
+        inverseJoinColumns = @JoinColumn(name = "provider_id")
+    )
+    private List<Provider> providers;
+
+    // --- GETTERS Y SETTERS ---
 
     public Long getId() {
         return id;
@@ -86,5 +98,14 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    // Getters y Setters para la nueva relación
+    public List<Provider> getProviders() {
+        return providers;
+    }
+
+    public void setProviders(List<Provider> providers) {
+        this.providers = providers;
     }
 }
