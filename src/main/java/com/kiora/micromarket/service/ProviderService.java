@@ -20,7 +20,6 @@ public class ProviderService {
     private final ProviderRepository providerRepository;
     private final ProductRepository productRepository;
 
-    // --- MÉTODOS DE CONSULTA Y CREACIÓN ---
 
     public List<ProviderResponseDTO> getAllProviders() {
         return providerRepository.findAll().stream()
@@ -28,7 +27,7 @@ public class ProviderService {
                 .collect(Collectors.toList());
     }
 
-    // Regla de Negocio 2: NIT obligatorio y no repetido
+    // NIT obligatorio y no repetido
     public ProviderResponseDTO createProvider(Provider provider) {
         if (provider.getTaxId() == null || provider.getTaxId().isBlank()) {
             throw new RuntimeException("El NIT del proveedor es un campo obligatorio.");
@@ -42,7 +41,7 @@ public class ProviderService {
         return mapToDTO(savedProvider);
     }
 
-    // --- REGLA DE NEGOCIO 1: ENTRADA DE ALMACÉN ---
+    // Entrada de almacen
 
     @Transactional
     public void registerWarehouseInput(WarehouseInputRequestDTO inputDTO) {
