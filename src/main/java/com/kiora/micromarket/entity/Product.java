@@ -1,10 +1,17 @@
 package com.kiora.micromarket.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import java.util.List; // Importante para la lista de proveedores
+import java.util.List;
 
 @Entity
 @Table(name = "products")
+// Esta anotación rompe el ciclo usando el ID del objeto
+@JsonIdentityInfo(
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "id"
+)
 public class Product {
 
     @Id
@@ -25,10 +32,9 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    // ESTA ES LA PARTE QUE FALTABA PARA CONECTAR CON PROVIDER
     @ManyToMany
     @JoinTable(
-        name = "products_providers", // Nombre de la tabla intermedia en la DB
+        name = "products_providers",
         joinColumns = @JoinColumn(name = "product_id"),
         inverseJoinColumns = @JoinColumn(name = "provider_id")
     )
