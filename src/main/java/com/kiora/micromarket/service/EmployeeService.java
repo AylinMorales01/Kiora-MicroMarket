@@ -114,7 +114,7 @@ public class EmployeeService {
     }
 
     /**
-     * Método para filtrar empleados activos por cargo
+     * Método para filtrar empleados activos por rol (cargo)
      * @param role Role
      * @return List<EmployeeResponseDTO>
      */

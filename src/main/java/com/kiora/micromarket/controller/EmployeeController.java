@@ -20,6 +20,11 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
+    @GetMapping
+    public ResponseEntity<List<EmployeeResponseDTO>> findAll() {
+        return ResponseEntity.ok(employeeService.findAll());
+    }
+
     @PostMapping
     public ResponseEntity<MessageResponseDTO> create(@RequestBody EmployeeRequestDTO request) {
         return ResponseEntity.ok(employeeService.create(request));
@@ -33,11 +38,6 @@ public class EmployeeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponseDTO> delete(@PathVariable Long id) {
         return ResponseEntity.ok(employeeService.delete(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<EmployeeResponseDTO>> findAll() {
-        return ResponseEntity.ok(employeeService.findAll());
     }
 
     @GetMapping("/role/{role}")
