@@ -3,27 +3,23 @@ spring:
     name: micromarket
 
   datasource:
-    url: jdbc:mysql://localhost:3306/micro_market_db?createDatabaseIfNotExist=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/micromarket?createDatabaseIfNotExist=true&serverTimezone=UTC
     username: root
     password:   # <--- Cada uno coloca su contraseña de MYSQL
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     defer-datasource-initialization: true
     properties:
       hibernate:
-        format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
 
   sql:
     init:
-      mode: always # Esto ejecutará tu archivo data.sql al arrancar
+      mode: never # Esto ejecutará tu archivo data.sql al arrancar
 
-# Configuración del servidor
 server:
   port: 8080
-  error:
-    include-message: always
