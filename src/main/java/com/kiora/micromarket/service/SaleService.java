@@ -81,6 +81,38 @@ public class SaleService {
         return mapToResponseDTO(savedSale);
     }
 
+    public List<SaleResponseDTO> getAllSales() {
+        return saleRepository.findAll().stream()
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public SaleResponseDTO getSaleById(Long id) {
+        Sale sale = saleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Venta no encontrada con ID: " + id));
+        return mapToResponseDTO(sale);
+    }
+
+    @Transactional
+    public void cancelSale(Long id) {
+        Sale sale = saleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Venta no encontrada con ID: " + id));
+
+        if (!sale.isActive()) {
+            throw new IllegalArgumentException("La venta ya se encuentra anulada.");
+        }
+
+        sale.setActive(false);
+
+        for (SaleDetail detail : sale.getDetails()) {
+            Product product = detail.getProduct();
+            product.setStock(product.getStock() + detail.getQuantity());
+            entityManager.merge(product);
+        }
+
+        saleRepository.save(sale);
+    }
+
     private SaleResponseDTO mapToResponseDTO(Sale sale) {
         SaleResponseDTO response = new SaleResponseDTO();
         response.setId(sale.getId());
@@ -89,6 +121,7 @@ public class SaleService {
         response.setIva(sale.getIva());
         response.setTotal(sale.getTotal());
         response.setEmployeeName(sale.getEmployee().getNombre());
+        response.setActive(sale.isActive());
 
         List<SaleDetailResponseDTO> detailDTOs = sale.getDetails().stream().map(detail -> {
             SaleDetailResponseDTO dto = new SaleDetailResponseDTO();

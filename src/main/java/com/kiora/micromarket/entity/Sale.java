@@ -20,6 +20,9 @@ public class Sale {
     private double iva;
     private double total;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
@@ -65,6 +68,14 @@ public class Sale {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Employee getEmployee() {

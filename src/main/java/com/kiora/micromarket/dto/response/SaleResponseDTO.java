@@ -11,6 +11,7 @@ public class SaleResponseDTO {
     private double iva;
     private double total;
     private String employeeName;
+    private boolean active;
     private List<SaleDetailResponseDTO> details;
 
     public Long getId() {
@@ -59,6 +60,14 @@ public class SaleResponseDTO {
 
     public void setEmployeeName(String employeeName) {
         this.employeeName = employeeName;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public List<SaleDetailResponseDTO> getDetails() {
