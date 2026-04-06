@@ -1,9 +1,17 @@
 package com.kiora.micromarket.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
+// Esta anotación rompe el ciclo usando el ID del objeto
+@JsonIdentityInfo(
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "id"
+)
 public class Product {
 
     @Id
@@ -23,6 +31,16 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToMany
+    @JoinTable(
+        name = "products_providers",
+        joinColumns = @JoinColumn(name = "product_id"),
+        inverseJoinColumns = @JoinColumn(name = "provider_id")
+    )
+    private List<Provider> providers;
+
+    // --- GETTERS Y SETTERS ---
 
     public Long getId() {
         return id;
@@ -86,5 +104,14 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    // Getters y Setters para la nueva relación
+    public List<Provider> getProviders() {
+        return providers;
+    }
+
+    public void setProviders(List<Provider> providers) {
+        this.providers = providers;
     }
 }
