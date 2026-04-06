@@ -20,6 +20,27 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category")
-    @JsonIgnore // <-- ESTA LÍNEA EVITA EL ERROR 500
+    @JsonIgnore
     private List<Product> products;
+
+    // GETTERS Y SETTERS (IMPORTANTE)
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
