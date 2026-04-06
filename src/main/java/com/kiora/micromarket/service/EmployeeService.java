@@ -102,13 +102,25 @@ public class EmployeeService {
     }
 
     /**
+     * Método para buscar un empleado por ID
+     * @param id Long
+     * @return EmployeeResponseDTO
+     */
+    public EmployeeResponseDTO findById(Long id) {
+        return employeeRepository.findById(id)
+                .filter(employee -> employee.isActive())
+                .map(this::mapToDTO)
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado o inactivo"));
+    }
+
+    /**
      * Método para listar todos los empleados activos
      * @return List<EmployeeResponseDTO>
      */
     public List<EmployeeResponseDTO> findAll() {
         return employeeRepository.findAll()
                 .stream()
-                .filter(Employee::isActive)
+                .filter(employee -> employee.isActive())
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
@@ -121,7 +133,7 @@ public class EmployeeService {
     public List<EmployeeResponseDTO> findByRole(Role role) {
         return employeeRepository.findByRole(role)
                 .stream()
-                .filter(Employee::isActive)
+                .filter(employee -> employee.isActive())
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
@@ -135,7 +147,7 @@ public class EmployeeService {
     public List<EmployeeResponseDTO> findByDateRange(LocalDate start, LocalDate end) {
         return employeeRepository.findByEntryDateBetween(start, end)
                 .stream()
-                .filter(Employee::isActive)
+                .filter(employee -> employee.isActive())
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
