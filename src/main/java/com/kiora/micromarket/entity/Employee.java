@@ -9,10 +9,6 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "employees")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Employee {
 
     @Id
@@ -37,4 +33,26 @@ public class Employee {
 
     @Column(nullable = false)
     private boolean active = true;
+
+    // Manual Getters & Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getCedula() { return cedula; }
+    public void setCedula(String cedula) { this.cedula = cedula; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
+
+    public LocalDate getEntryDate() { return entryDate; }
+    public void setEntryDate(LocalDate entryDate) { this.entryDate = entryDate; }
+
+    public Double getSalary() { return salary; }
+    public void setSalary(Double salary) { this.salary = salary; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }
