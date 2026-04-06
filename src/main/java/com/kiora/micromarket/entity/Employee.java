@@ -5,22 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "employees")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "employees")
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String cedula;
 
     @Column(nullable = false)
@@ -30,7 +29,7 @@ public class Employee {
     @Column(nullable = false)
     private Role role;
 
-    @Column(name = "entry_date", nullable = false)
+    @Column(name = "entry_date")
     private LocalDate entryDate;
 
     @Column(nullable = false)
