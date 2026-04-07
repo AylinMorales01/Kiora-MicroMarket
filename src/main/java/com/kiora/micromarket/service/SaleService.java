@@ -13,24 +13,20 @@ import com.kiora.micromarket.excepcion.ResourceNotFoundException;
 import com.kiora.micromarket.repository.SaleRepository;
 
 import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SaleService {
 
     private final SaleRepository saleRepository;
     private final EntityManager entityManager;
-
-    public SaleService(SaleRepository saleRepository, EntityManager entityManager) {
-        this.saleRepository = saleRepository;
-        this.entityManager = entityManager;
-    }
 
     @Transactional
     public SaleResponseDTO createSale(SaleRequestDTO requestDTO) {
@@ -44,7 +40,6 @@ public class SaleService {
         sale.setEmployee(employee);
 
         double totalSubtotal = 0.0;
-        List<SaleDetail> detailsList = new ArrayList<>();
 
         for (SaleDetailRequestDTO detailDTO : requestDTO.getDetails()) {
             Product product = entityManager.find(Product.class, detailDTO.getProductId());
@@ -53,8 +48,8 @@ public class SaleService {
             }
 
             if (product.getStock() < detailDTO.getQuantity()) {
-                throw new InsufficientStockException("Stock insuficiente para el producto: " + product.getName() 
-                + ". Stock actual: " + product.getStock() + ", requerido: " + detailDTO.getQuantity());
+                throw new InsufficientStockException("Stock insuficiente para el producto: " + product.getName()
+                        + ". Stock actual: " + product.getStock() + ", requerido: " + detailDTO.getQuantity());
             }
 
             product.setStock(product.getStock() - detailDTO.getQuantity());
@@ -77,7 +72,6 @@ public class SaleService {
         sale.setTotal(totalSubtotal + iva);
 
         Sale savedSale = saleRepository.save(sale);
-
         return mapToResponseDTO(savedSale);
     }
 
