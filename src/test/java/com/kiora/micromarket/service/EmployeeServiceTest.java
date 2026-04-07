@@ -43,14 +43,7 @@ class EmployeeServiceTest {
         request.setEntryDate(LocalDate.now());
         request.setSalary(2000.0);
 
-        employee = new Employee();
-        employee.setId(1L);
-        employee.setCedula("1001");
-        employee.setName("Juan Perez");
-        employee.setRole(Role.CAJERO);
-        employee.setEntryDate(LocalDate.now());
-        employee.setSalary(2000.0);
-        employee.setActive(true);
+        employee = new Employee(1L, "1001", "Juan Perez", Role.CAJERO, LocalDate.now(), 2000.0, true);
     }
 
     @Test
@@ -87,8 +80,7 @@ class EmployeeServiceTest {
 
     @Test
     void findAll_ShouldReturnOnlyActiveEmployees() {
-        Employee inactiveEmployee = new Employee();
-        inactiveEmployee.setActive(false);
+        Employee inactiveEmployee = new Employee(2L, "1002", "Pedro Marmol", Role.CAJERO, LocalDate.now(), 1500.0, false);
         
         when(employeeRepository.findAll()).thenReturn(List.of(employee, inactiveEmployee));
 
