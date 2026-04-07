@@ -40,12 +40,12 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.delete(id));
     }
 
-    @GetMapping("/role/{role}")
-    public ResponseEntity<List<EmployeeResponseDTO>> findByRole(@PathVariable Role role) {
-        return ResponseEntity.ok(employeeService.findByRole(role));
+    @GetMapping("/filter/cargo")
+    public ResponseEntity<List<EmployeeResponseDTO>> findByRole(@RequestParam Role cargo) {
+        return ResponseEntity.ok(employeeService.findByRole(cargo));
     }
-
-    @GetMapping("/date-range")
+/*FILTRAR FECHA */
+    @GetMapping("/filter/date")
     public ResponseEntity<List<EmployeeResponseDTO>> findByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {

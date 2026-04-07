@@ -88,7 +88,7 @@ public class SaleService {
         response.setSubtotal(sale.getSubtotal());
         response.setIva(sale.getIva());
         response.setTotal(sale.getTotal());
-        response.setEmployeeName(sale.getEmployee().getNombre());
+        response.setEmployeeName(sale.getEmployee().getName());
 
         List<SaleDetailResponseDTO> detailDTOs = sale.getDetails().stream().map(detail -> {
             SaleDetailResponseDTO dto = new SaleDetailResponseDTO();
