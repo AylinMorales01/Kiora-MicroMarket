@@ -31,6 +31,7 @@ public class Employee {
     @Column(nullable = false)
     private Double salary;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean active = true;
 

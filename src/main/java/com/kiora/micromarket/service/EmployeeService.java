@@ -35,6 +35,11 @@ public class EmployeeService {
             return response;
         }
 
+        /*if (request.getPassword() == null || request.getPassword().isBlank()) {
+            response.setMessage("La contraseña es obligatoria");
+            return response;
+        }*/
+
         Employee employee = new Employee();
         employee.setCedula(request.getCedula());
         employee.setName(request.getName());
@@ -71,7 +76,6 @@ public class EmployeeService {
         employee.setRole(request.getRole());
         employee.setEntryDate(request.getEntryDate());
         employee.setSalary(request.getSalary());
-
         employeeRepository.save(employee);
 
         response.setMessage("Empleado actualizado exitosamente");

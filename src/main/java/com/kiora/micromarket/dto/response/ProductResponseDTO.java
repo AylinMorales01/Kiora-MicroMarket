@@ -1,10 +1,15 @@
 package com.kiora.micromarket.dto.response;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
 public class ProductResponseDTO {
-    public Long id;
-    public String name;
-    public String barcode;
-    public double price;
-    public int stock;
-    public boolean active;
+    private Long id;
+    private String name;
+    private String barcode;
+    private double price;
+    private int stock;
+    private boolean active;
 }
