@@ -3,27 +3,30 @@ spring:
     name: micromarket
 
   datasource:
-    url: ${DB_URL:jdbc:h2:mem:micromarket;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
-    username: ${DB_USERNAME:sa}
-    password: ${DB_PASSWORD:}
-    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    url: jdbc:mysql://localhost:3306/micromarket?createDatabaseIfNotExist=true&serverTimezone=UTC
+    username: root
+    password: ""
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
-    defer-datasource-initialization: true
+      ddl-auto: update # Cambiado de 'create' a 'update' para evitar pérdida de datos, create borra y crea la base de datos cada vez, vslidation para validar las entidades con la base de datos, update solo actualiza la estructura sin borrar datos
     show-sql: true
+    defer-datasource-initialization: true
     properties:
       hibernate:
-        format_sql: true
-        dialect: ${DB_DIALECT:org.hibernate.dialect.H2Dialect}
+        dialect: org.hibernate.dialect.MySQLDialect
 
   sql:
     init:
-      mode: always # Esto ejecutará tu archivo data.sql al arrancar
+      mode: never # Esto ejecutará tu archivo data.sql al arrancar
 
-# Configuración del servidor
 server:
   port: 8080
   error:
-    include-message: always
+      include-message: always
+
+security:
+  jwt:
+    secret-key: my-super-secure-jwt-secret-key-change-this-please-2026
+    token-expiration: 86400000

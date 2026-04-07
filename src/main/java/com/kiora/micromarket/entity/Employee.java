@@ -1,76 +1,43 @@
-package com.kiora.micromarket.entity;
+    package com.kiora.micromarket.entity;
 
-import jakarta.persistence.*;
-import java.time.LocalDate;
 
-@Entity
-@Table(name = "employees")
-public class Employee {
+    import jakarta.persistence.*;
+    import lombok.AllArgsConstructor;
+    import lombok.Builder;
+    import lombok.Data;
+    import lombok.NoArgsConstructor;
+    import java.time.LocalDate;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Entity
+    @Table(name = "employees")
+    public class Employee {
 
-    @Column(unique = true, nullable = false)
-    private String cedula;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    @Column(nullable = false)
-    private String nombre;
+        @Column(nullable = false, unique = true)
+        private String cedula;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Cargo cargo;
+        @Column(nullable = false)
+        private String name;
 
-    @Column(name = "fecha_ingreso")
-    private LocalDate fechaIngreso;
+        @Enumerated(EnumType.STRING)
+        @Column(nullable = false)
+        private Role role;
 
-    private Double salario;
+        @Column(name = "entry_date")
+        private LocalDate entryDate;
 
-    public Long getId() {
-        return id;
+        @Column(nullable = false)
+        private Double salary;
+
+        @Builder.Default
+        @Column(nullable = false)
+        private boolean active = true;
+
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public Cargo getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(Cargo cargo) {
-        this.cargo = cargo;
-    }
-
-    public LocalDate getFechaIngreso() {
-        return fechaIngreso;
-    }
-
-    public void setFechaIngreso(LocalDate fechaIngreso) {
-        this.fechaIngreso = fechaIngreso;
-    }
-
-    public Double getSalario() {
-        return salario;
-    }
-
-    public void setSalario(Double salario) {
-        this.salario = salario;
-    }
-}
