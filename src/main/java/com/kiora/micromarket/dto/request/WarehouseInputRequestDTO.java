@@ -7,13 +7,13 @@ import lombok.Data;
 @Data
 public class WarehouseInputRequestDTO {
 
-    @NotNull(message = "Product ID is required")
+    @NotNull(message = "Se requiere un id de producto para registrar la entrada de inventario")
     private Long productId;
 
-    @NotNull(message = "Provider ID is required")
+    @NotNull(message = "Se requiere un id de proveedor para registrar la entrada de inventario")
     private Long providerId;
 
-    @NotNull(message = "Quantity is required")
-    @Min(value = 1, message = "Quantity must be at least 1")
+    @NotNull(message = "Se requiere una cantidad del producto para registrar la entrada de inventario")
+    @Min(value = 1, message = "La cantidad debe ser igual o mayor a 1")
     private Integer quantity;
 }
