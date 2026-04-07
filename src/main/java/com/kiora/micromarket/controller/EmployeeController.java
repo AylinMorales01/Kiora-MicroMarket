@@ -7,6 +7,7 @@ import com.kiora.micromarket.entity.Role;
 import com.kiora.micromarket.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,46 +15,95 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employees")
+@RequestMapping("/api/v1/employees")
 @RequiredArgsConstructor
 public class EmployeeController {
 
-    private final EmployeeService employeeService;
+    private final EmployeeService service;
 
-    @GetMapping
-    public ResponseEntity<List<EmployeeResponseDTO>> findAll() {
-        return ResponseEntity.ok(employeeService.findAll());
+    @GetMapping("/get-all")
+    public ResponseEntity<?> getAll() {
+        try {
+            List<EmployeeResponseDTO> response = service.findAll();
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            MessageResponseDTO errorResponse = new MessageResponseDTO();
+            errorResponse.setMessage("Error al intentar obtener el listado de los empleados");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeResponseDTO> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(employeeService.findById(id));
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        try {
+            EmployeeResponseDTO response = service.findById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (RuntimeException e) {
+            MessageResponseDTO errorResponse = new MessageResponseDTO();
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
     }
 
-    @PostMapping
-    public ResponseEntity<MessageResponseDTO> create(@RequestBody EmployeeRequestDTO request) {
-        return ResponseEntity.ok(employeeService.create(request));
+    @PostMapping("/create")
+    public ResponseEntity<?> create(@RequestBody EmployeeRequestDTO request) {
+        try {
+            MessageResponseDTO response = service.create(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (RuntimeException e) {
+            MessageResponseDTO errorResponse = new MessageResponseDTO();
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<MessageResponseDTO> update(@PathVariable Long id, @RequestBody EmployeeRequestDTO request) {
-        return ResponseEntity.ok(employeeService.update(id, request));
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody EmployeeRequestDTO request) {
+        try {
+            MessageResponseDTO response = service.update(id, request);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (RuntimeException e) {
+            MessageResponseDTO errorResponse = new MessageResponseDTO();
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<MessageResponseDTO> delete(@PathVariable Long id) {
-        return ResponseEntity.ok(employeeService.delete(id));
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        try {
+            MessageResponseDTO response = service.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (RuntimeException e) {
+            MessageResponseDTO errorResponse = new MessageResponseDTO();
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
     }
 
     @GetMapping("/filter/cargo")
-    public ResponseEntity<List<EmployeeResponseDTO>> findByRole(@RequestParam Role cargo) {
-        return ResponseEntity.ok(employeeService.findByRole(cargo));
+    public ResponseEntity<?> findByRole(@RequestParam Role cargo) {
+        try {
+            List<EmployeeResponseDTO> response = service.findByRole(cargo);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            MessageResponseDTO errorResponse = new MessageResponseDTO();
+            errorResponse.setMessage("Error al filtrar por cargo");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @GetMapping("/filter/date")
-    public ResponseEntity<List<EmployeeResponseDTO>> findByDateRange(
+    public ResponseEntity<?> findByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
-        return ResponseEntity.ok(employeeService.findByDateRange(start, end));
+        try {
+            List<EmployeeResponseDTO> response = service.findByDateRange(start, end);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            MessageResponseDTO errorResponse = new MessageResponseDTO();
+            errorResponse.setMessage("Error al filtrar por rango de fechas");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 }
