@@ -25,6 +25,11 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeResponseDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.findById(id));
+    }
+
     @PostMapping
     public ResponseEntity<MessageResponseDTO> create(@RequestBody EmployeeRequestDTO request) {
         return ResponseEntity.ok(employeeService.create(request));
@@ -44,7 +49,7 @@ public class EmployeeController {
     public ResponseEntity<List<EmployeeResponseDTO>> findByRole(@RequestParam Role cargo) {
         return ResponseEntity.ok(employeeService.findByRole(cargo));
     }
-/*FILTRAR FECHA */
+
     @GetMapping("/filter/date")
     public ResponseEntity<List<EmployeeResponseDTO>> findByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
