@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update # Cambiado de 'create' a 'update' para evitar pérdida de datos, create borra y crea la base de datos cada vez, vslidation para validar las entidades con la base de datos, update solo actualiza la estructura sin borrar datos
     show-sql: true
     defer-datasource-initialization: true
     properties:
@@ -19,7 +19,14 @@ spring:
 
   sql:
     init:
-      mode: never
+      mode: always
 
 server:
   port: 8080
+  error:
+      include-message: always
+
+security:
+  jwt:
+    secret-key: my-super-secure-jwt-secret-key-change-this-please-2026
+    token-expiration: 86400000
