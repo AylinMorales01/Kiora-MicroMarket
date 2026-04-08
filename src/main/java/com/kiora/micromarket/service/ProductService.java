@@ -71,7 +71,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    // --- MAPEO ---
+    
     private ProductResponseDTO mapToDTO(Product product) {
         return ProductResponseDTO.builder()
                 .id(product.getId())

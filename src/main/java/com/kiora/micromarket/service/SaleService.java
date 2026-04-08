@@ -71,7 +71,6 @@ public class SaleService {
         sale.setTotal(totalSubtotal + iva);
 
         Sale savedSale = saleRepository.save(sale);
-
         return mapToResponseDTO(savedSale);
     }
 
@@ -116,6 +115,7 @@ public class SaleService {
         response.setIva(sale.getIva());
         response.setTotal(sale.getTotal());
         response.setEmployeeName(sale.getEmployee().getName());
+        response.setActive(sale.isActive());
 
         List<SaleDetailResponseDTO> detailDTOs = sale.getDetails().stream().map(detail -> {
             SaleDetailResponseDTO dto = new SaleDetailResponseDTO();

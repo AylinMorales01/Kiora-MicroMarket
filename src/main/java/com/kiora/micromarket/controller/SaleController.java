@@ -29,7 +29,6 @@ public class SaleController {
         } catch (RuntimeException e) {
             MessageResponseDTO errorResponse = new MessageResponseDTO();
             errorResponse.setMessage(e.getMessage());
-            // Retorna 400 Bad Request si falla el stock o falta un dato
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
