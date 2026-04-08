@@ -8,35 +8,29 @@ import com.kiora.micromarket.entity.Employee;
 import com.kiora.micromarket.entity.Product;
 import com.kiora.micromarket.entity.Sale;
 import com.kiora.micromarket.entity.SaleDetail;
-import com.kiora.micromarket.excepcion.InsufficientStockException;
-import com.kiora.micromarket.excepcion.ResourceNotFoundException;
 import com.kiora.micromarket.repository.SaleRepository;
 
 import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SaleService {
 
     private final SaleRepository saleRepository;
     private final EntityManager entityManager;
 
-    public SaleService(SaleRepository saleRepository, EntityManager entityManager) {
-        this.saleRepository = saleRepository;
-        this.entityManager = entityManager;
-    }
-
     @Transactional
     public SaleResponseDTO createSale(SaleRequestDTO requestDTO) {
         Employee employee = entityManager.find(Employee.class, requestDTO.getEmployeeId());
         if (employee == null) {
-            throw new ResourceNotFoundException("Empleado no encontrado con ID: " + requestDTO.getEmployeeId());
+            throw new RuntimeException("Empleado no encontrado con ID: " + requestDTO.getEmployeeId());
         }
 
         Sale sale = new Sale();
@@ -44,19 +38,19 @@ public class SaleService {
         sale.setEmployee(employee);
 
         double totalSubtotal = 0.0;
-        List<SaleDetail> detailsList = new ArrayList<>();
 
         for (SaleDetailRequestDTO detailDTO : requestDTO.getDetails()) {
             Product product = entityManager.find(Product.class, detailDTO.getProductId());
             if (product == null || !product.isActive()) {
-                throw new ResourceNotFoundException("Producto no encontrado o inactivo con ID: " + detailDTO.getProductId());
+                throw new RuntimeException("Producto no encontrado o inactivo con ID: " + detailDTO.getProductId());
             }
 
             if (product.getStock() < detailDTO.getQuantity()) {
-                throw new InsufficientStockException("Stock insuficiente para el producto: " + product.getName() 
+                throw new RuntimeException("Stock insuficiente para el producto: " + product.getName() 
                 + ". Stock actual: " + product.getStock() + ", requerido: " + detailDTO.getQuantity());
             }
 
+            // Restar el stock
             product.setStock(product.getStock() - detailDTO.getQuantity());
             entityManager.merge(product);
 
@@ -79,6 +73,39 @@ public class SaleService {
         Sale savedSale = saleRepository.save(sale);
 
         return mapToResponseDTO(savedSale);
+    }
+
+    public List<SaleResponseDTO> getAllSales() {
+        return saleRepository.findAll().stream()
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public SaleResponseDTO getSaleById(Long id) {
+        Sale sale = saleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada con ID: " + id));
+        return mapToResponseDTO(sale);
+    }
+
+    @Transactional
+    public void cancelSale(Long id) {
+        Sale sale = saleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada con ID: " + id));
+
+        if (!sale.isActive()) {
+            throw new RuntimeException("La venta ya se encuentra anulada.");
+        }
+
+        sale.setActive(false);
+
+        // Devolver el stock a los productos
+        for (SaleDetail detail : sale.getDetails()) {
+            Product product = detail.getProduct();
+            product.setStock(product.getStock() + detail.getQuantity());
+            entityManager.merge(product);
+        }
+
+        saleRepository.save(sale);
     }
 
     private SaleResponseDTO mapToResponseDTO(Sale sale) {
