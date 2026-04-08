@@ -44,7 +44,8 @@ public class SaleService {
         for (SaleDetailRequestDTO detailDTO : requestDTO.getDetails()) {
             Product product = entityManager.find(Product.class, detailDTO.getProductId());
             if (product == null || !product.isActive()) {
-                throw new ResourceNotFoundException("Producto no encontrado o inactivo con ID: " + detailDTO.getProductId());
+                throw new ResourceNotFoundException(
+                        "Producto no encontrado o inactivo con ID: " + detailDTO.getProductId());
             }
 
             if (product.getStock() < detailDTO.getQuantity()) {
@@ -114,7 +115,7 @@ public class SaleService {
         response.setSubtotal(sale.getSubtotal());
         response.setIva(sale.getIva());
         response.setTotal(sale.getTotal());
-        response.setEmployeeName(sale.getEmployee().getNombre());
+        response.setEmployeeName(sale.getEmployee().getName());
         response.setActive(sale.isActive());
 
         List<SaleDetailResponseDTO> detailDTOs = sale.getDetails().stream().map(detail -> {

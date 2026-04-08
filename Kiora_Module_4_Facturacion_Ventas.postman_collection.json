@@ -21,12 +21,13 @@
 					"raw": "{\n    \"employeeId\": 1,\n    \"details\": [\n        {\n            \"productId\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"productId\": 2,\n            \"quantity\": 1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "{{base_url}}/api/sales",
+					"raw": "{{base_url}}/api/v1/sales",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"api",
+						"v1",
 						"sales"
 					]
 				}
@@ -39,12 +40,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/api/sales",
+					"raw": "{{base_url}}/api/v1/sales",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"api",
+						"v1",
 						"sales"
 					]
 				}
@@ -57,12 +59,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/api/sales/1",
+					"raw": "{{base_url}}/api/v1/sales/1",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"api",
+						"v1",
 						"sales",
 						"1"
 					]
@@ -76,12 +79,13 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/api/sales/1",
+					"raw": "{{base_url}}/api/v1/sales/1",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"api",
+						"v1",
 						"sales",
 						"1"
 					]
