@@ -15,6 +15,12 @@ import java.time.LocalDate;
 @Table(name = "employees")
 public class Employee {
 
+    public enum Role {
+        ADMINISTRADOR,
+        CAJERO,
+        AUXILIAR
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,7 +1,7 @@
 package com.kiora.micromarket.repository;
 
 import com.kiora.micromarket.entity.Employee;
-import com.kiora.micromarket.entity.Role;
+import com.kiora.micromarket.entity.Employee.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

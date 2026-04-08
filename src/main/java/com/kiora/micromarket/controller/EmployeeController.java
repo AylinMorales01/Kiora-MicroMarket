@@ -3,7 +3,7 @@ package com.kiora.micromarket.controller;
 import com.kiora.micromarket.dto.request.EmployeeRequestDTO;
 import com.kiora.micromarket.dto.response.EmployeeResponseDTO;
 import com.kiora.micromarket.dto.response.MessageResponseDTO;
-import com.kiora.micromarket.entity.Role;
+import com.kiora.micromarket.entity.Employee.Role;
 import com.kiora.micromarket.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;

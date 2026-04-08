@@ -3,7 +3,7 @@ package com.kiora.micromarket.service;
 import com.kiora.micromarket.dto.response.EmployeeResponseDTO;
 import com.kiora.micromarket.dto.response.MessageResponseDTO;
 import com.kiora.micromarket.entity.Employee;
-import com.kiora.micromarket.entity.Role;
+import com.kiora.micromarket.entity.Employee.Role;
 import com.kiora.micromarket.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
