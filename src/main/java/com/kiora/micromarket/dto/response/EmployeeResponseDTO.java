@@ -1,11 +1,13 @@
 package com.kiora.micromarket.dto.response;
 
-import com.kiora.micromarket.entity.Role;
+import com.kiora.micromarket.entity.Employee.Role;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDate;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

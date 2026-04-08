@@ -1,10 +1,9 @@
 package com.kiora.micromarket.service;
 
-import com.kiora.micromarket.dto.request.EmployeeRequestDTO;
 import com.kiora.micromarket.dto.response.EmployeeResponseDTO;
 import com.kiora.micromarket.dto.response.MessageResponseDTO;
 import com.kiora.micromarket.entity.Employee;
-import com.kiora.micromarket.entity.Role;
+import com.kiora.micromarket.entity.Employee.Role;
 import com.kiora.micromarket.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,13 +11,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import com.kiora.micromarket.dto.request.EmployeeRequestDTO;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     /**
      * Método para registrar un nuevo empleado
@@ -31,27 +31,25 @@ public class EmployeeService {
         Optional<Employee> employeeExist = employeeRepository.findByCedula(request.getCedula());
 
         if (employeeExist.isPresent()) {
-            response.setMessage("Un empleado con esta cédula ya está registrado");
-            return response;
+            return new MessageResponseDTO("Un empleado con esta cédula ya está registrado");
         }
 
-        /*if (request.getPassword() == null || request.getPassword().isBlank()) {
-            response.setMessage("La contraseña es obligatoria");
-            return response;
-        }*/
+        if (request.getPassword() == null || request.getPassword().isBlank()) {
+            return new MessageResponseDTO("La contraseña es obligatoria");
+        }
 
-        Employee employee = new Employee();
-        employee.setCedula(request.getCedula());
-        employee.setName(request.getName());
-        employee.setRole(request.getRole());
-        employee.setEntryDate(request.getEntryDate());
-        employee.setSalary(request.getSalary());
-        employee.setActive(true);
+        Employee employee = Employee.builder()
+        .cedula(request.getCedula())
+        .name(request.getName())
+        .password(passwordEncoder.encode(request.getPassword()))
+        .role(request.getRole())
+        .entryDate(request.getEntryDate())
+        .salary(request.getSalary())
+        .active(true)
+        .build();
 
         employeeRepository.save(employee);
-
-        response.setMessage("Empleado registrado exitosamente");
-        return response;
+        return new MessageResponseDTO("Empleado registrado exitosamente");
     }
 
     /**
@@ -60,26 +58,25 @@ public class EmployeeService {
      * @param request EmployeeRequestDTO
      * @return MessageResponseDTO
      */
+    @org.springframework.transaction.annotation.Transactional
     public MessageResponseDTO update(Long id, EmployeeRequestDTO request) {
-        MessageResponseDTO response = new MessageResponseDTO();
+        return employeeRepository.findById(id)
+                .filter(employee -> employee.isActive())
+                .map(employee -> {
+                    if (request.getCedula() != null) employee.setCedula(request.getCedula());
+                    if (request.getName() != null) employee.setName(request.getName());
+                    if (request.getPassword() != null && !request.getPassword().isBlank()) {
+                        employee.setPassword(passwordEncoder.encode(request.getPassword()));
+                    }
+                    if (request.getRole() != null) employee.setRole(request.getRole());
+                    if (request.getEntryDate() != null) employee.setEntryDate(request.getEntryDate());
+                    if (request.getSalary() != null) employee.setSalary(request.getSalary());
 
-        Optional<Employee> employeeOptional = employeeRepository.findById(id);
+                    employeeRepository.save(employee);
+                    return new MessageResponseDTO("Empleado actualizado exitosamente");
+                })
+                .orElse(new MessageResponseDTO("Empleado no encontrado o inactivo"));
 
-        if (employeeOptional.isEmpty()) {
-            response.setMessage("Empleado no encontrado");
-            return response;
-        }
-
-        Employee employee = employeeOptional.get();
-        employee.setCedula(request.getCedula());
-        employee.setName(request.getName());
-        employee.setRole(request.getRole());
-        employee.setEntryDate(request.getEntryDate());
-        employee.setSalary(request.getSalary());
-        employeeRepository.save(employee);
-
-        response.setMessage("Empleado actualizado exitosamente");
-        return response;
     }
 
     /**
@@ -88,23 +85,15 @@ public class EmployeeService {
      * @return MessageResponseDTO
      */
     public MessageResponseDTO delete(Long id) {
-        MessageResponseDTO response = new MessageResponseDTO();
-
-        Optional<Employee> employeeOptional = employeeRepository.findById(id);
-
-        if (employeeOptional.isEmpty()) {
-            response.setMessage("Empleado no encontrado");
-            return response;
-        }
-
-        Employee employee = employeeOptional.get();
-        employee.setActive(false);
-        employeeRepository.save(employee);
-
-        response.setMessage("Empleado eliminado exitosamente");
-        return response;
+        return employeeRepository.findById(id)
+                .filter(employee -> employee.isActive()) // Solo procesar si está activo
+                .map(employee -> {
+                    employee.setActive(false);
+                    employeeRepository.save(employee);
+                    return new MessageResponseDTO("Empleado eliminado exitosamente");
+                })
+                .orElse(new MessageResponseDTO("Empleado no encontrado"));
     }
-
     /**
      * Método para buscar un empleado por ID
      * @param id Long
@@ -157,14 +146,14 @@ public class EmployeeService {
     }
 
     private EmployeeResponseDTO mapToDTO(Employee employee) {
-        EmployeeResponseDTO dto = new EmployeeResponseDTO();
-        dto.setId(employee.getId());
-        dto.setCedula(employee.getCedula());
-        dto.setName(employee.getName());
-        dto.setRole(employee.getRole());
-        dto.setEntryDate(employee.getEntryDate());
-        dto.setSalary(employee.getSalary());
-        dto.setMessage("Ok");
-        return dto;
+        return EmployeeResponseDTO.builder()
+                .id(employee.getId())
+                .cedula(employee.getCedula())
+                .name(employee.getName())
+                .role(employee.getRole())
+                .entryDate(employee.getEntryDate())
+                .salary(employee.getSalary())
+                .message("Ok")
+                .build();
     }
 }

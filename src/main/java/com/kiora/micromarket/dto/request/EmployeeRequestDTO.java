@@ -1,14 +1,18 @@
 package com.kiora.micromarket.dto.request;
 
-import com.kiora.micromarket.entity.Role;
+import com.kiora.micromarket.entity.Employee.Role;
 import lombok.Data;
+import lombok.Builder;
+
 import java.time.LocalDate;
 
+@Builder
 @Data
 public class EmployeeRequestDTO {
     private String cedula;
     private String name;
+    private String password;
     private Role role;
-    private LocalDate entryDate;
     private Double salary;
+    private LocalDate entryDate;
 }

@@ -28,5 +28,5 @@ server:
 
 security:
   jwt:
-    secret-key: my-super-secure-jwt-secret-key-change-this-please-2026
-    token-expiration: 86400000
+    secret-key: 1DkmrsdRvQF9jZ2sb0Vw0NI5KKSaxvPIsf5wbakern8=
+    token-expiration: 600000
