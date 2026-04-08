@@ -1,6 +1,7 @@
 package com.kiora.micromarket.controller;
 
 import com.kiora.micromarket.dto.request.SaleRequestDTO;
+import com.kiora.micromarket.dto.response.MessageResponseDTO; // ¡Importante!
 import com.kiora.micromarket.dto.response.SaleResponseDTO;
 import com.kiora.micromarket.service.SaleService;
 
@@ -21,24 +22,52 @@ public class SaleController {
     private final SaleService saleService;
 
     @PostMapping
-    public ResponseEntity<SaleResponseDTO> createSale(@Valid @RequestBody SaleRequestDTO request) {
-        SaleResponseDTO response = saleService.createSale(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<?> createSale(@Valid @RequestBody SaleRequestDTO request) {
+        try {
+            SaleResponseDTO response = saleService.createSale(request);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            MessageResponseDTO errorResponse = new MessageResponseDTO();
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
     }
 
     @GetMapping
-    public ResponseEntity<List<SaleResponseDTO>> getAllSales() {
-        return ResponseEntity.ok(saleService.getAllSales());
+    public ResponseEntity<?> getAllSales() {
+        try {
+            List<SaleResponseDTO> response = saleService.getAllSales();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            MessageResponseDTO errorResponse = new MessageResponseDTO();
+            errorResponse.setMessage("Error al obtener el listado de ventas");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SaleResponseDTO> getSaleById(@PathVariable Long id) {
-        return ResponseEntity.ok(saleService.getSaleById(id));
+    public ResponseEntity<?> getSaleById(@PathVariable Long id) {
+        try {
+            SaleResponseDTO response = saleService.getSaleById(id);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            MessageResponseDTO errorResponse = new MessageResponseDTO();
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> cancelSale(@PathVariable Long id) {
-        saleService.cancelSale(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> cancelSale(@PathVariable Long id) {
+        try {
+            saleService.cancelSale(id);
+            MessageResponseDTO successResponse = new MessageResponseDTO();
+            successResponse.setMessage("Venta anulada exitosamente. El stock ha sido devuelto.");
+            return ResponseEntity.ok(successResponse);
+        } catch (RuntimeException e) {
+            MessageResponseDTO errorResponse = new MessageResponseDTO();
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
     }
 }

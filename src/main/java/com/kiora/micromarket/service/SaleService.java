@@ -8,8 +8,6 @@ import com.kiora.micromarket.entity.Employee;
 import com.kiora.micromarket.entity.Product;
 import com.kiora.micromarket.entity.Sale;
 import com.kiora.micromarket.entity.SaleDetail;
-import com.kiora.micromarket.excepcion.InsufficientStockException;
-import com.kiora.micromarket.excepcion.ResourceNotFoundException;
 import com.kiora.micromarket.repository.SaleRepository;
 
 import jakarta.persistence.EntityManager;
@@ -32,7 +30,7 @@ public class SaleService {
     public SaleResponseDTO createSale(SaleRequestDTO requestDTO) {
         Employee employee = entityManager.find(Employee.class, requestDTO.getEmployeeId());
         if (employee == null) {
-            throw new ResourceNotFoundException("Empleado no encontrado con ID: " + requestDTO.getEmployeeId());
+            throw new RuntimeException("Empleado no encontrado con ID: " + requestDTO.getEmployeeId());
         }
 
         Sale sale = new Sale();
@@ -44,15 +42,15 @@ public class SaleService {
         for (SaleDetailRequestDTO detailDTO : requestDTO.getDetails()) {
             Product product = entityManager.find(Product.class, detailDTO.getProductId());
             if (product == null || !product.isActive()) {
-                throw new ResourceNotFoundException(
-                        "Producto no encontrado o inactivo con ID: " + detailDTO.getProductId());
+                throw new RuntimeException("Producto no encontrado o inactivo con ID: " + detailDTO.getProductId());
             }
 
             if (product.getStock() < detailDTO.getQuantity()) {
-                throw new InsufficientStockException("Stock insuficiente para el producto: " + product.getName()
-                        + ". Stock actual: " + product.getStock() + ", requerido: " + detailDTO.getQuantity());
+                throw new RuntimeException("Stock insuficiente para el producto: " + product.getName() 
+                + ". Stock actual: " + product.getStock() + ", requerido: " + detailDTO.getQuantity());
             }
 
+            // Restar el stock
             product.setStock(product.getStock() - detailDTO.getQuantity());
             entityManager.merge(product);
 
@@ -84,21 +82,22 @@ public class SaleService {
 
     public SaleResponseDTO getSaleById(Long id) {
         Sale sale = saleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Venta no encontrada con ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada con ID: " + id));
         return mapToResponseDTO(sale);
     }
 
     @Transactional
     public void cancelSale(Long id) {
         Sale sale = saleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Venta no encontrada con ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada con ID: " + id));
 
         if (!sale.isActive()) {
-            throw new IllegalArgumentException("La venta ya se encuentra anulada.");
+            throw new RuntimeException("La venta ya se encuentra anulada.");
         }
 
         sale.setActive(false);
 
+        // Devolver el stock a los productos
         for (SaleDetail detail : sale.getDetails()) {
             Product product = detail.getProduct();
             product.setStock(product.getStock() + detail.getQuantity());

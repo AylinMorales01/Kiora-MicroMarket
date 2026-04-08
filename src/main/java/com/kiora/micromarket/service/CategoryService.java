@@ -55,7 +55,7 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
-    // --- MAPEO ---
+    
     private CategoryResponseDTO mapToDTO(Category category) {
         List<ProductResponseDTO> productDTOs = null;
         
